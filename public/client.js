@@ -29,8 +29,15 @@ function sendMessage(message){
 
     //send to server
 
-    socket.emit('message',msg)
+    socket.emit('message',msg);
+
+    // Save the message to the MySQL database
+    saveMessageToDatabase(name, message);
 }
+
+function saveMessageToDatabase(user, message) {
+    socket.emit('saveMessage', { user, message });
+  }
 
 function appendMessage(msg,type){
     let mainDiv = document.createElement('div')
@@ -51,10 +58,11 @@ function appendMessage(msg,type){
 
 // Recieve message 
 
-socket.on('message',(msg)=>{
-    appendMessage(msg,'incoming')
-    scrollToBottom();
-})
+socket.on('message', (msg) => {
+  appendMessage(msg, 'incoming');
+  scrollToBottom();
+});
+
 
 
 function scrollToBottom(){
